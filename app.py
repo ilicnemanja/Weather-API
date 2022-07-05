@@ -1,14 +1,14 @@
 import requests
 import configparser
 from datetime import datetime
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
 config = configparser.ConfigParser()
 config.read('settings.ini')
 
-cities = ['Istanbul', 'Moscow', 'London', 'Saint Petersburg', 'Berlin', 'Madrid', 'Kyiv', 
+cities = ['Istanbul', 'Moscow', 'London', 'Leningrad', 'Berlin', 'Madrid', 'Kyiv', 
 'Rome', 'Bucharest', 'Paris', 'Minsk', 'Sarajevo', 'Banja Luka', 'Vienna', 'Hamburg', 'Warsaw', 'Budapest', 'Belgrade', 
 'Barcelona', 'Munich', 'Kharkiv', 'Milan', 'Sofia', 'Skoplje', 'Prague', 'Kazan', 'Nizhny Novgorod', 'Samara',
 'Birmingham', 'Rostov-on-Don', 'Ufa', 'Cologne', 'Voronezh', 'Perm', 'Volgograd']
@@ -63,10 +63,12 @@ def get_weather(city):
 
         return data
 
-    except (IndexError, TypeError) as error:
-        print(f"Are you sure you entered the city correctly?\nError: {error}")
-    except Exception as ex:
-        print(ex)
+    except TypeError as type_error:
+        print(f"Are you sure you entered the city correctly?\nError: {type_error}")
+    except IndexError:
+        pass
+    except Exception as error:
+        print(error)
 
 
 @app.route("/")

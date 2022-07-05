@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Weather API Flask App | {{weather['city_name']}}{% endblock title %}
+
+{% include 'navbar.html' %}
+
+{% block content %}
+    <br><br>
+    <h1 class="text-center">{{weather['city_name']}}</h1>
+    <br>
+    <h3 class="text-center"><span class="text-black">{{weather['maxTemp']}}°</span> / <span class="text-secondary">{{weather['minTemp']}}°</span></h3>
+{% endblock content %}

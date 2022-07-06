@@ -50,7 +50,7 @@ def get_weather(city):
         data2 = response2.json()
 
         date_formatting = data2['forecast'][0]['date']
-        today_date = datetime.strptime(date_formatting, '%Y-%m-%d').strftime('%B %d, %Y')
+        today_date = datetime.strptime(date_formatting, '%Y-%m-%d').strftime('%a, %d. %B')
         symbol = data2['forecast'][0]['symbol']
         maxTemp = data2['forecast'][0]['maxTemp']
         minTemp = data2['forecast'][0]['minTemp']
@@ -70,22 +70,26 @@ def get_weather(city):
     except Exception as error:
         print(error)
 
+def get_time():
+    now = datetime.now()
+    current_time = now.strftime("%H:%M")
+    return current_time
 
 @app.route("/")
 def home():
-    return render_template('home.html', cities=cities)
+    return render_template('home.html', cities=cities, current_time=get_time())
 
 @app.route("/<city>", methods=["GET"])
 def weather_for_city(city):
     weather = get_weather(city)
-    return render_template('city.html', weather=weather, cities=cities)
+    return render_template('city.html', weather=weather, cities=cities, current_time=get_time())
 
 @app.route("/search", methods=["GET"])
 def searched_city():
     city = request.args.get('city')
     weather = get_weather(city)
 
-    return render_template('searched_city.html', weather=weather, cities=cities)
+    return render_template('searched_city.html', weather=weather, cities=cities, current_time=get_time())
 
 
 if __name__ == "__main__":

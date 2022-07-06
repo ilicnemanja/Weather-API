@@ -5,8 +5,16 @@
 {% include 'navbar.html' %}
 
 {% block content %}
-    <br><br>
+    <br><br><br>
     <h1 class="text-center">{{weather['city_name']}}</h1>
     <br>
+    <h5 class="text-center text-secondary">{{current_time}}</h5>
+    <h4 class="text-center text-secondary">{{weather['date']}}</h4>
+    <br>
     <h3 class="text-center"><span class="text-black">{{weather['maxTemp']}}°</span> / <span class="text-secondary">{{weather['minTemp']}}°</span></h3>
+    <p class="text-center text-secondary">Wind speed {{weather['maxWindSpeed']}}</p>
+    <br>
+    <div class="text-center">
+        <img width="100" height="100" src="static/images/{{weather['symbol']}}.png" alt="">
+    </div>
 {% endblock content %}

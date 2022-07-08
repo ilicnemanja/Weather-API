@@ -1,5 +1,6 @@
 import requests
 import configparser
+import arrow
 from datetime import datetime
 from flask import Flask, render_template, request
 
@@ -35,10 +36,12 @@ def get_weather(city):
     url = 'https://pfa.foreca.com/api/v1/'
     token = config['API']['token']
 
+    print("**** CITY IS: ", city)
+
+
     try:
         response1 = requests.get(url=f"{url}location/search/{city}?token={token}")
         data1 = response1.json()
-
         city_name = data1['locations'][0]['name']
         country = data1['locations'][0]['country']
         timezone = data1['locations'][0]['timezone']
@@ -62,34 +65,39 @@ def get_weather(city):
         }
 
         return data
-
-    except TypeError as type_error:
-        print(f"Are you sure you entered the city correctly?\nError: {type_error}")
-    except IndexError:
-        pass
-    except Exception as error:
+    except (TypeError, IndexError) as error:
         print(error)
+    except Exception as ex:
+        print(ex)
+    
 
-def get_time():
-    now = datetime.now()
-    current_time = now.strftime("%H:%M")
+
+def get_time(timezone: str):
+    utc = arrow.utcnow()
+    current_time = utc.to(timezone).format("HH:mm")
     return current_time
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def home():
-    return render_template('home.html', cities=cities, current_time=get_time())
+    return render_template('home.html', cities=cities)
 
-@app.route("/<city>", methods=["GET"])
+@app.route("/<string:city>", methods=["GET"])
 def weather_for_city(city):
     weather = get_weather(city)
-    return render_template('city.html', weather=weather, cities=cities, current_time=get_time())
+    current_time = ''
+    if weather:
+        current_time = get_time(weather['timezone'])
+    
+    return render_template('city.html', weather=weather, cities=cities, current_time=current_time)
 
 @app.route("/search", methods=["GET"])
 def searched_city():
     city = request.args.get('city')
     weather = get_weather(city)
-
-    return render_template('searched_city.html', weather=weather, cities=cities, current_time=get_time())
+    current_time = ''
+    if weather:
+        current_time = get_time(weather['timezone'])
+    return render_template('searched_city.html', weather=weather, cities=cities, current_time=current_time)
 
 
 if __name__ == "__main__":

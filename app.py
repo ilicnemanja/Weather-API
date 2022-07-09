@@ -3,6 +3,9 @@ import configparser
 import arrow
 from datetime import datetime
 from flask import Flask, render_template, request
+import os
+from flask import send_from_directory
+
 
 app = Flask(__name__)
 
@@ -35,8 +38,6 @@ def get_weather(city):
     
     url = 'https://pfa.foreca.com/api/v1/'
     token = config['API']['token']
-
-    print("**** CITY IS: ", city)
 
 
     try:
@@ -76,6 +77,11 @@ def get_time(timezone: str):
     utc = arrow.utcnow()
     current_time = utc.to(timezone).format("HH:mm")
     return current_time
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),'favicon.ico',mimetype='image/vnd.microsoft.icon')
 
 @app.route("/", methods=["GET"])
 def home():
